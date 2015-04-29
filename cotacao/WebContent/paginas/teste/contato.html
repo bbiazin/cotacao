@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+	var baseURI = "http://localhost:8080/cotacao/rest/contato"
+		
+	$("#botao1").click(function() {
+	  var x = $.ajax({
+          type: "GET",
+          url: baseURI + "/" + $("#id").val(),
+          //dataType: "JSON",
+          //  crossDomain: true,
+          success: function(data){
+              console.log(data);
+              $("#id").val(data.id);
+              $("#nome").val(data.nome);
+              $("#email").val(data.email);
+              $("#retorno").text(x.responseText);
+          },
+          error: function(data){
+              console.log(data);
+              $("#retorno").html(x.responseText);
+          }
+      });
+   });
+
+
+  $("#botao2").click(function() {
+	  var obj = JSON.stringify({
+			"id":  $("#id").val(), 
+			"nome": $("#nome").val(), 
+			"email": $("#email").val(), 
+			"dono" : {"id" : 5014}
+			});
+
+		var x = $.ajax({
+			type: 'POST',
+			contentType: 'application/json',
+			url: baseURI,
+			dataType: "json",
+			data: obj,
+			success: function(data) {
+				console.log(data);
+               $("#retorno").text(x.responseText);
+			},
+			error: function(data) {
+				console.log(data);
+	              $("#retorno").html(x.responseText);
+			}
+		});
+   });
+
+  $("#botao3").click(function() {
+		var x= $.ajax({
+			type: 'DELETE',
+            url: baseURI + "/" + $("#id").val(),
+        	success: function(data) {
+				console.log(data);
+               $("#retorno").text(x.responseText);
+			},
+			error: function(data) {
+				console.log(data);
+	               $("#retorno").text(x.responseText);
+			}
+		});
+   });
+
+  $("#botao4").click(function() {
+		var x = $.ajax({
+		          type: "GET",
+		          url: baseURI,
+		          dataType: "JSON",
+				  crossDomain: true,
+		          success: function(data){
+		              console.log("OK");
+					  console.log(data);
+					  console.log(document.cookie);
+		              $("#retorno").text(x.responseText);
+		          },
+		          error: function(data){
+		              console.log("Erro");
+					  console.log(data);
+		              $("#retorno").html(x.responseText);
+		          }
+		      });
+		   });
+
+var URILogin = "http://localhost:8080/cotacao/rest/login"
+		
+	$("#botao5").click(function() {
+	  var obj = JSON.stringify({
+			"j_username":  "1", 
+			"j_password": "1"
+			});
+
+		var x = $.ajax({
+			type: 'POST',
+			contentType: 'application/json',
+			url: URILogin,
+//			dataType: "json",
+			//data: obj,
+			success: function(data) {
+				document.cookie = "JSESSIONID=" + x.responseText;
+				console.log(data);
+               $("#retorno").html(x.responseText);
+			  console.log(document.cookie);
+			},
+			error: function(data) {
+				console.log(data);
+	              $("#retorno").html(x.responseText);
+			}
+		});
+   });
+
+		   
+});
+
+
+</script>
+</head>
+<body>
+
+	<input type="button" id="botao1" value="Recuperar pelo id" />
+	<input type="button" id="botao2" value="Salvar" />
+	<input type="button" id="botao3" value="Excluir pelo id" />
+	<input type="button" id="botao4" value="Listar" />
+	<input type="button" id="botao5" value="Login" />
+	<br />
+	<input type="text" id="id" placeholder="id do contato" />
+	<br />
+	<input type="text" id="nome" placeholder="nome do contato" />
+	<br />
+	<input type="text" id="email" placeholder="e-mail do contato" />
+
+	<p> Retorno: </p>
+	<p id="retorno" />
+
+</body>
+</html>

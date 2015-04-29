@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="headComplementar">
+	</ui:define>
+
+	<ui:define name="titulo">Pesquisar cargas</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" closable="true" />
+			<p />
+			<p:outputPanel id="menuAcoes" style="clear: both">
+				<h:panelGrid columns="10">
+					<p:inputText value="#{pesquisaCargaMb.chavePesquisa}"
+						title="Pesquisar por origem, destino ou produto" />
+					<p:commandButton value="Pesquisar"
+						actionListener="#{pesquisaCargaMb.listar}"
+						update="visoes, mensagens" />
+					<p:spacer width="8px" />
+					<p:commandButton value="Detalhes"
+						actionListener="#{pesquisaCargaMb.iniciarDetalhes}"
+						disabled="#{!pesquisaCargaMb.actionDetalhesHabilitada()}"
+						update="visoes" />
+					<p:commandButton value="Solicitar autorização de carregamento"
+						actionListener="#{pesquisaCargaMb.iniciarSolicitacaoCarregamento}"
+						disabled="#{!pesquisaCargaMb.actionDetalhesHabilitada()}"
+						update="visoes" />
+					<p:commandButton value="Adicionar às minhas cargas"
+						actionListener="#{pesquisaCargaMb.adicionarAsMinhasCargas}"
+						disabled="#{!pesquisaCargaMb.actionPushRoteiroHabilitada()}"
+						update="visoes" />
+					<p:commandButton value="Ver minhas cargas"
+						actionListener="#{pesquisaCargaMb.iniciarMinhasCargas}"
+						disabled="#{!pesquisaCargaMb.actionPushRoteiroHabilitada()}"
+						update="visoes" />
+				</h:panelGrid>
+				<p />
+			</p:outputPanel>
+
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{pesquisaCargaMb.exibirAreaListagem}">
+					<p:dataTable id="lista" value="#{pesquisaCargaMb.lista}"
+						var="anuncio" emptyMessage="Nenhum registro encontrado"
+						style="display: inline-block; min-width:450px"
+						selection="#{pesquisaCargaMb.selecao}" selectionMode="multiple"
+						rowKey="#{anuncio}">
+
+						<p:ajax event="rowSelect" update="@parent:menuAcoes" />
+						<p:ajax event="rowUnselect" update="@parent:menuAcoes" />
+
+						<p:column>
+							<f:facet name="header">Id</f:facet>
+							<h:outputText value="#{anuncio.id}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Origem</f:facet>
+							<h:outputText value="#{anuncio.origem}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Destino</f:facet>
+							<h:outputText value="#{anuncio.destino}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Produto</f:facet>
+							<h:outputText value="#{anuncio.produto}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Preço</f:facet>
+							<h:outputText value="#{anuncio.preco}">
+								<f:convertNumber pattern="##,##0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<f:facet name="header">Pedágio</f:facet>
+							<h:outputText
+								value="#{anuncio.maisPedagio ? 'Adicional' : 'Incluso'}">
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton id="anterior" value="Anterior"
+						title="Página anterior"
+						disabled="#{!pesquisaCargaMb.temPaginaAnterior()}"
+						actionListener="#{pesquisaCargaMb.paginaAnterior}"
+						update="mensagens, areaListagem" />
+					<p:commandButton id="proxima" value="Próxima"
+						title="Próxima página"
+						disabled="#{!pesquisaCargaMb.temProximaPagina()}"
+						actionListener="#{pesquisaCargaMb.proximaPagina}"
+						update="mensagens, areaListagem" />
+				</p:outputPanel>
+
+				<p />
+				<p:outputPanel id="areaMinhasCargas" rendered="#{pesquisaCargaMb.exibirAreaMinhasCargas}">
+					<ui:repeat value="#{pesquisaCargaMb.minhasCargas}" var="minhaCarga">
+						<p:panel style="width: 200px; float: left; margin-right: 10px">
+							<f:facet name="header">
+							<p:commandButton value="Detalhes"
+								actionListener="#{pesquisaCargaMb.excluirMinhaCarga(minhaCarga)}"
+								update="@all" />
+							<p:commandButton value="Remover"
+								actionListener="#{pesquisaCargaMb.excluirMinhaCarga(minhaCarga)}"
+								update="@all" />
+							</f:facet>
+							<h:panelGrid columns="2">
+								<h:panelGrid>
+									<h:outputText value="#{minhaCarga.anuncio.origem}" />
+									<h:outputText value="#{minhaCarga.anuncio.destino}" />
+									<h:outputText value="#{minhaCarga.anuncio.produto}" />
+									<h:panelGroup>
+										<h:outputText value="#{minhaCarga.anuncio.preco}">
+											<f:convertNumber pattern="##,##0.00" />
+										</h:outputText>
+										<h:outputText
+											value="#{minhaCarga.anuncio.maisPedagio ? ' mais pedágio' : ''}" />
+									</h:panelGroup>
+								</h:panelGrid>
+							</h:panelGrid>
+						</p:panel>
+					</ui:repeat>
+
+
+				</p:outputPanel>
+
+				<p:outputPanel id="areaDetalhes"
+					rendered="#{pesquisaCargaMb.exibirAreaDetalhes}">
+					<p:outputLabel value="Detalhes do carregamento"
+						style="font-size: 1.2em" />
+					<p />
+					<p:panelGrid columns="2">
+						<p:outputLabel value="Origem" />
+						<h:outputText value="#{pesquisaCargaMb.anuncioDetalhes.origem}" />
+						<p:outputLabel value="Destino" />
+						<h:outputText value="#{pesquisaCargaMb.anuncioDetalhes.destino}" />
+						<p:outputLabel value="Produto" />
+						<h:outputText value="#{pesquisaCargaMb.anuncioDetalhes.produto}" />
+						<p:outputLabel value="Preço" />
+						<h:panelGroup>
+							<h:outputText value="#{pesquisaCargaMb.anuncioDetalhes.preco}">
+								<f:convertNumber pattern="##,##0.00" />
+							</h:outputText>
+							<h:outputText
+								value="#{pesquisaCargaMb.anuncioDetalhes.maisPedagio ? ' mais pedágio' : ''}" />
+						</h:panelGroup>
+						<p:outputLabel value="Dados complementares" />
+						<h:outputText
+							value="#{pesquisaCargaMb.anuncioDetalhes.dadosComplementares}" />
+					</p:panelGrid>
+					<br />
+					<br />
+					<p:commandButton value="Voltar"
+						actionListener="#{pesquisaCargaMb.terminarDetalhes}" update="visoes" />
+				</p:outputPanel>
+
+
+				<p:outputPanel id="autorizacao"
+					rendered="#{pesquisaCargaMb.exibirAreaAutorizacaoCarregamento}">
+					<p:outputLabel value="Solicitar autorização para carregamento"
+						style="font-size: 1.2em" />
+					<p />
+					<p:panelGrid columns="2">
+						<p:outputLabel value="Origem" />
+						<h:outputText
+							value="#{pesquisaCargaMb.solicitacaoCarga.anuncio.origem}" />
+						<p:outputLabel value="Destino" />
+						<h:outputText
+							value="#{pesquisaCargaMb.solicitacaoCarga.anuncio.destino}" />
+						<p:outputLabel value="Produto" />
+						<h:outputText
+							value="#{pesquisaCargaMb.solicitacaoCarga.anuncio.produto}" />
+						<p:outputLabel value="Preço" />
+						<h:panelGroup>
+							<h:outputText
+								value="#{pesquisaCargaMb.solicitacaoCarga.anuncio.preco}">
+								<f:convertNumber pattern="##,##0.00" />
+							</h:outputText>
+							<h:outputText
+								value="#{pesquisaCargaMb.solicitacaoCarga.anuncio.maisPedagio ? ' mais pedágio' : ''}" />
+						</h:panelGroup>
+						<p:outputLabel value="Dados complementares" />
+						<h:outputText
+							value="#{pesquisaCargaMb.solicitacaoCarga.anuncio.dadosComplementares}" />
+					</p:panelGrid>
+					<br />
+					<br />
+					<h:panelGrid>
+						<p:outputLabel value="Data prevista para carregar" />
+						<p:calendar
+							value="#{pesquisaCargaMb.solicitacaoCarga.dataPrevista}" />
+						<p:outputLabel value="Comentário" />
+						<p:inputTextarea
+							value="#{pesquisaCargaMb.solicitacaoCarga.observacao}" cols="50" />
+					</h:panelGrid>
+					<p:commandButton value="Solicitar"
+						actionListener="#{pesquisaCargaMb.terminarSolicitacaoCarregamento}"
+						update="visoes" />
+					<p:commandButton value="Voltar"
+						actionListener="#{pesquisaCargaMb.voltarSolicitacaoCarregamento}"
+						update="visoes" />
+				</p:outputPanel>
+
+			</p:outputPanel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

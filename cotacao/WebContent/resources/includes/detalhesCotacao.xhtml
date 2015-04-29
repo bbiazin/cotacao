@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+	<div style="display: inline-block">
+		<p:panelGrid columns="4">
+			<p:outputLabel value="Origem" />
+			<p:outputLabel value="Destino" />
+			<p:outputLabel value="Produto" />
+			<p:outputLabel value="Quantidade" />
+				<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.carregamento.origem}" />
+			<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.carregamento.destino}" />
+			<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.carregamento.produto}" />
+			<h:panelGroup>
+				<h:outputText
+					value="#{cotacoesRemetenteMb.itemDetalhes.carregamento.quantidade}">
+					<f:convertNumber pattern="###,###,##0.##" />
+				</h:outputText>
+				<h:outputText
+					value="  #{cotacoesRemetenteMb.itemDetalhes.carregamento.unidadeQuantidade}" />
+			</h:panelGroup>
+	</p:panelGrid>
+
+	<p/>	
+		<h:panelGrid columns="2">
+			<p:outputLabel value="Cotação " />
+			<h:outputText value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.id}" />
+			<p:outputLabel value="Unid. preço " />
+			<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.unidadePreco}" />
+
+			<p:outputLabel value="Habilitados " />
+			<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.habilitacoesToString}" />
+			<p:outputLabel value="Data da publicação " />
+			<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.dataPublicacao}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+			<p:outputLabel value="Data do fechamento " />
+			<h:outputText
+				value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.dataFechamento}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+			<p:outputLabel value="Data do encerramento " />
+			<h:outputText value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.dataEncerramento}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+			<p:outputLabel value="Encerrada por " />
+			<h:outputText value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.usuarioEncerramento.nome}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+			<p:outputLabel value="Justificativa " />
+			<h:outputText value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.obsEncerramento}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+			</h:outputText>
+		</h:panelGrid>
+		<p />
+
+		<p:outputLabel value="Ofertas" />
+		<p />
+		<p:dataTable value="#{cotacoesRemetenteMb.itemDetalhes.ofertas}"
+			var="oferta" emptyMessage="Nenhuma oferta registrada."
+			style="display: inline-block">
+			<p:column style="text-align: center">
+				<f:facet name="header">Escolhido</f:facet>
+				<p:selectBooleanCheckbox disabled="true" value="#{oferta.escolhida}" />
+			</p:column>
+			<p:column>
+				<f:facet name="header">Valor</f:facet>
+				<p:outputLabel value="#{oferta.valor}">
+					<f:convertNumber pattern="###,##0.00" />
+				</p:outputLabel>
+			</p:column>
+			<p:column>
+				<f:facet name="header">Data</f:facet>
+				<p:outputLabel value="#{oferta.data}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+				</p:outputLabel>
+			</p:column>
+			<p:column>
+				<f:facet name="header">Remetente</f:facet>
+				<p:outputLabel value="#{oferta.habilitado.nome}" />
+			</p:column>
+		</p:dataTable>
+	</div>
+	<p />
+
+	<div style="display: inline-block">
+		<p:outputLabel value="Histórico" />
+		<p />
+		<p:dataTable id="eventos"
+			value="#{cotacoesRemetenteMb.itemDetalhes.cotacao.eventos}"
+			var="evento">
+			<p:column headerText="Data">
+				<h:outputText value="#{evento.data}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Evento">
+				<h:outputText value="#{evento.classificacao}" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{evento.detalhes}" />
+			</p:column>
+		</p:dataTable>
+	</div>
+
+</ui:composition>

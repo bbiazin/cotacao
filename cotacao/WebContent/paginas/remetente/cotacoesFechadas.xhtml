@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Cotações fechadas</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" />
+			<p />
+
+			<p:outputPanel id="areaDados"
+				style="display: inline-block;">
+				<p:dataGrid id="itens" columns="1"
+					value="#{cotacoesFechadasMb.lista}" var="item">
+
+					<div style="width: 100%; background-color: #f1f1f1;  padding: 3px;">
+					<p:panelGrid columns="7" style="width: 100%; ">
+						<p:outputLabel value="#{item.cotacao.id}" />
+						<p:outputLabel value="#{item.carregamento.origem}" />
+						<p:outputLabel value="#{item.carregamento.destino}" />
+						<p:outputLabel value="#{item.carregamento.produto}" />
+						<p:outputLabel value="#{item.carregamento.quantidade}">
+							<f:convertNumber pattern="###,##0.##" />
+						</p:outputLabel>
+						<p:outputLabel value="#{item.carregamento.unidadeQuantidade}" />
+						<p:outputLabel value="Preço por #{item.unidadePreco}" />
+					</p:panelGrid>
+					</div>
+
+					<div style="margin: 15px 30px 30px;">
+						<p:dataTable value="#{item.ofertas}" var="oferta" style="display: inline-block">
+							<p:column style="text-align: center">
+								<f:facet name="header">Escolher</f:facet>
+								<p:selectBooleanCheckbox value="#{oferta.escolhida}"/>
+							</p:column>
+							<p:column>
+								<f:facet name="header">Valor</f:facet>
+								<p:outputLabel value="#{oferta.valor}">
+									<f:convertNumber pattern="###,##0.00" />
+								</p:outputLabel>
+							</p:column>
+							<p:column>
+								<f:facet name="header">Remetente</f:facet>
+								<p:outputLabel value="#{oferta.dono.nome}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">Data</f:facet>
+								<p:outputLabel value="#{oferta.data}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</p:outputLabel>
+							</p:column>
+						</p:dataTable>
+						<p />
+						<h:panelGrid>
+						<p:outputLabel value="Observação relacionada ao encerramento" />
+						<p:inputTextarea value="#{item.cotacao.obsEncerramento}" cols="75"/>
+						<p:commandButton value="Encerrar"
+							actionListener="#{cotacoesFechadasMb.encerrarCotacao(item)}"
+							update="itens" />
+						</h:panelGrid>
+					</div>
+				</p:dataGrid>
+			</p:outputPanel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

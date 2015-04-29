@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cotacao" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="99e89534-1430-42a0-b278-b9da5d76fdce">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Ofertas" uuid="3a25480b-9833-4c52-92c4-f970a065926c">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="itemCotacao" class="modelo.ItemCotacao">
+			<fieldDescription><![CDATA[itemCotacao]]></fieldDescription>
+		</field>
+		<field name="valor" class="java.lang.Double">
+			<fieldDescription><![CDATA[valor]]></fieldDescription>
+		</field>
+		<field name="remetente" class="modelo.Usuario">
+			<fieldDescription><![CDATA[remetente]]></fieldDescription>
+		</field>
+		<field name="data" class="java.util.Date">
+			<fieldDescription><![CDATA[data]]></fieldDescription>
+		</field>
+		<field name="modalidade" class="java.lang.String">
+			<fieldDescription><![CDATA[modalidade]]></fieldDescription>
+		</field>
+		<field name="escolhida" class="java.lang.Boolean">
+			<fieldDescription><![CDATA[escolhida]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="carregamento" class="modelo.Carregamento">
+		<fieldDescription><![CDATA[carregamento]]></fieldDescription>
+	</field>
+	<field name="cotacao" class="modelo.Cotacao">
+		<fieldDescription><![CDATA[cotacao]]></fieldDescription>
+	</field>
+	<field name="dataEncerramento" class="java.util.Date">
+		<fieldDescription><![CDATA[dataEncerramento]]></fieldDescription>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[id]]></fieldDescription>
+	</field>
+	<field name="modalidades" class="java.util.List">
+		<fieldDescription><![CDATA[modalidades]]></fieldDescription>
+	</field>
+	<field name="ofertas" class="java.util.List">
+		<fieldDescription><![CDATA[ofertas]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="251" height="25" uuid="e218b3ab-380d-4a27-a72a-0d5c7a348382"/>
+				<textElement>
+					<font size="15"/>
+				</textElement>
+				<text><![CDATA[Cotações realizadas no período]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="25" width="555" height="1" uuid="ca0e4e45-ad58-479a-8435-3cc9db835781"/>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="166" splitType="Stretch">
+			<textField>
+				<reportElement x="57" y="20" width="147" height="20" uuid="57329a92-e343-4346-b761-48c8fde2f1f9"/>
+				<textFieldExpression><![CDATA[$F{carregamento}.getOrigem()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="57" y="40" width="147" height="20" uuid="d78d4e07-1db9-4940-87ea-a7e07879a68b"/>
+				<textFieldExpression><![CDATA[$F{carregamento}.getDestino()]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement key="table" x="0" y="112" width="135" height="54" uuid="c00ddfe8-ac5e-472c-b021-d08c5b0e0da4"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Ofertas" uuid="af5ba6bf-4e76-4d08-95a2-541d16f98788">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{ofertas})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="360" uuid="59435ac8-458c-4981-9025-08e61dec9dd7">
+						<jr:tableHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="360" height="30" uuid="5ebf8f45-5c8b-4ca9-882d-18b5fbe5050b"/>
+								<text><![CDATA[Ofertas]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:column width="90" uuid="b5ea4870-968e-484a-aded-c6c4bbd04a17">
+							<jr:columnHeader height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="30" uuid="77f62103-c416-40cf-838d-8b0f0cebac1d"/>
+									<text><![CDATA[Modalidade]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="90" height="20" uuid="bac98823-3d6b-4f1c-ab5e-c1e2c0682614"/>
+									<textFieldExpression><![CDATA[$F{modalidade}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="90" uuid="11099644-57da-4dea-b0bf-a751250900ac">
+							<jr:columnHeader height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="30" uuid="47a40451-7e57-4fc1-904a-8bd779b4cf9d"/>
+									<text><![CDATA[Valor]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField pattern="###,##0.00">
+									<reportElement x="0" y="0" width="90" height="30" uuid="23dd8466-1af0-4c55-922d-75e32ffaf274"/>
+									<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="90" uuid="d4f63567-3d98-4d7b-b531-615d1509ada4">
+							<jr:columnHeader height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="30" uuid="97c38a99-2921-4a23-a9ce-062f31050154"/>
+									<text><![CDATA[Data]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="90" height="30" uuid="bd200633-2efc-40eb-852e-cb08a4e705f2"/>
+									<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="90" uuid="90b47786-c85c-4dea-813d-8d822c93c4d0">
+							<jr:columnHeader height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="30" uuid="40d0c3c1-f848-4931-9001-8a3b35277380"/>
+									<text><![CDATA[Prestador]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="90" height="30" uuid="32fb8b3d-5bef-4fed-a4f4-8cce4fb8d198"/>
+									<textFieldExpression><![CDATA[$F{remetente}.getNome()]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<textField>
+				<reportElement x="57" y="0" width="52" height="20" uuid="88fd7b2b-190d-4193-9681-3ba1e2e659e4"/>
+				<textFieldExpression><![CDATA[$F{cotacao}.getId()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="57" y="60" width="110" height="20" uuid="edaf8ebb-719b-4d07-985f-dd9b50cfdf79"/>
+				<textFieldExpression><![CDATA[$F{carregamento}.getProduto()]]></textFieldExpression>
+			</textField>
+			<textField pattern="###,##0.##">
+				<reportElement x="57" y="80" width="53" height="20" uuid="f1e2fb4b-9a0a-437e-91e1-4a6e4eb6510d"/>
+				<textFieldExpression><![CDATA[$F{carregamento}.getQuantidade()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="80" width="29" height="20" uuid="f05ed745-d44f-4814-b536-f8276b4ae966"/>
+				<textFieldExpression><![CDATA[$F{carregamento}.getUnidadeQuantidade()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="52" height="20" uuid="68754659-9ae4-4b09-a6e0-5d65e5e1613f"/>
+				<text><![CDATA[Cotação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="52" height="20" uuid="51341474-ee29-46ab-a9fe-e51aeff760c1"/>
+				<text><![CDATA[Origem]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="52" height="20" uuid="0d436039-f4d9-4d0c-a565-10945b0834eb"/>
+				<text><![CDATA[Destino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="52" height="20" uuid="98604bae-82ec-4fb1-b5f5-fe2944ad6959"/>
+				<text><![CDATA[Produto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="80" width="52" height="20" uuid="27d585e6-b178-4a2b-a3ff-29616d933279"/>
+				<text><![CDATA[Qtde]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

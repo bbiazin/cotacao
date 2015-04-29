@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+	var baseURI = "http://localhost:8080/cotacao/rest/resposta"
+		
+
+  $("#botao2").click(function() {
+	  var obj = JSON.stringify({
+		  	"cotacaoId": "153956",
+		  	"observacao": "Valores válidos até final deste mês", 
+		  	"ofertas": [
+			  		  	/*{"itemId": "153961", "valor": "15"},*/
+			  		  	{"itemId": "153962", "valor": "23"}
+					  	]
+		});
+		console.log(obj);
+
+		var x = $.ajax({
+			type: 'POST',
+			contentType: 'application/json',
+			url: baseURI,
+			dataType: "json",
+			data: obj,
+			success: function(data) {
+				console.log(data);
+               $("#retorno").text(x.responseText);
+			},
+			error: function(data) {
+				console.log(data);
+	              $("#retorno").html(x.responseText);
+			}
+		});
+   });
+
+		   
+});
+
+
+</script>
+</head>
+<body>
+
+	<input type="button" id="botao2" value="Salvar" />
+
+	<p> Retorno: </p>
+	<p id="retorno" />
+
+</body>
+</html>

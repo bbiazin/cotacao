@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<ui:insert name="headComplementar" />
+</h:head>
+
+<h:body>
+
+	<h:form prependId="false">
+		<div style="padding: 5px;">
+		<p:commandButton id="dynaButton" value="#{sessaoMb.login}" type="button"
+			icon="ui-icon-calculator"
+			style="border: 1px solid #f5f5f5; background-color: #f9f9f9; font-size: 11px;
+			border-radius: 0px" />
+
+			<p:outputLabel value="  Central de cargas - " style="font-size: 17px;" />
+			<p:outputLabel style="font-size: 15px; display: inline">
+				<ui:insert name="titulo" />
+			</p:outputLabel>
+		</div>
+		<p/>
+		<p:tieredMenu id="menu" overlay="true" trigger="dynaButton" my="left top"
+			at="left bottom" style="width:270px">
+				<p:menuitem value="Anúncio de cargas"
+					url="/paginas/anuncio/anuncio.xhtml" />
+				<p:menuitem value="Pesquisa cargas"
+					url="/paginas/anuncio/pesquisaCarga.xhtml" />
+				<p:menuitem value="Solicitações de carga"
+					url="/paginas/anuncio/responderSolicitacaoCarga.xhtml" />
+				<p:menuitem value="Tipos de veículo"
+					url="/paginas/anuncio/tipoVeiculo.xhtml" />
+				<p:menuitem value="Tipos de carroceria"
+					url="/paginas/anuncio/tipoCarroceria.xhtml" />
+				<p:menuitem value="Nova cotação"
+					url="/paginas/remetente/novaCotacao.xhtml" />
+				<p:menuitem value="Nova cotação teste de frete"
+					url="/paginas/remetente/novaCotacao.xhtml?tipo=frete" />
+				<p:menuitem value="Cotações fechadas"
+					url="/paginas/remetente/cotacoesFechadas.xhtml" />
+				<p:menuitem value="Consulta cotações enviadas"
+					url="/paginas/remetente/consultaCotacoesEnviadas.xhtml" />
+				<p:menuitem value="Contatos" url="/paginas/remetente/contato.xhtml" />
+				<p:menuitem value="Grupos de contato" url="/paginas/remetente/grupoContato.xhtml" />
+				<p:separator />
+				<p:menuitem value="Cotações a responder"
+					url="/paginas/destinatario/cotacoesAResponder.xhtml" />
+				<p:menuitem value="Consulta cotações recebidas"
+					url="/paginas/destinatario/consultaCotacoesRecebidas.xhtml" />
+				<p:separator />
+				<p:menuitem value="Painel de embarques"
+					url="/paginas/destinatario/painelEmbarques.xhtml" />
+				<p:separator />
+				<p:menuitem value="Cadastrar veículo" 
+					url="/paginas/comum/veiculo.xhtml" />
+				<p:separator />
+				<p:menuitem value="Gerenciar usuários" 
+					url="/paginas/admin/usuario.xhtml" />
+				<p:menuitem value="Alterar minha senha" 
+					url="/paginas/alterarSenha.xhtml" />
+				<p:menuitem action="#{sessaoMb.logout}" immediate="true" value="Sair" />
+		</p:tieredMenu>
+
+	</h:form>
+
+	<ui:insert name="conteudo" />
+
+</h:body>
+
+</html>

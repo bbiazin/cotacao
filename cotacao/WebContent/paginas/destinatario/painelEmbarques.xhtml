@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Painel de embarques</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" />
+			<p />
+
+			<p:outputPanel id="areaMenu">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:commandButton id="filtro" value="Filtro" icon="ui-icon-zoomin"
+						type="button" />
+					<p:overlayPanel id="areaFiltro" for="filtro" widgetVar="filtro">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Origem" />
+							<p:inputText value="#{painelEmbarquesMb.filtro.origem}" />
+							<p:outputLabel value="Destino" />
+							<p:inputText value="#{painelEmbarquesMb.filtro.destino}" />
+							<p:outputLabel value="Produto" />
+							<p:inputText value="#{painelEmbarquesMb.filtro.produto}" />
+							<p:outputLabel value="Período de publicação" />
+							<h:panelGroup>
+								<p:inputMask
+									value="#{painelEmbarquesMb.filtro.publicacaoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:inputMask>
+								a
+								<p:inputMask
+									value="#{painelEmbarquesMb.filtro.publicacaoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:inputMask>
+							</h:panelGroup>
+							<p:outputLabel value="Período de fechamento" />
+							<h:panelGroup>
+								<p:inputMask
+									value="#{painelEmbarquesMb.filtro.fechamentoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:inputMask>
+								a
+								<p:inputMask
+									value="#{painelEmbarquesMb.filtro.fechamentoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:inputMask>
+							</h:panelGroup>
+							<p:outputLabel value="Período de encerramento" />
+							<h:panelGroup>
+								<p:inputMask
+									value="#{painelEmbarquesMb.filtro.encerramentoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:inputMask>
+								a
+								<p:inputMask
+									value="#{painelEmbarquesMb.filtro.encerramentoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:inputMask>
+							</h:panelGroup>
+						</h:panelGrid>
+						<p />
+						<p:commandButton value="Filtrar"
+							actionListener="#{painelEmbarquesMb.listar}"
+							onclick="PF('filtro').close()"
+							update="areaListagem" />
+						<p:commandButton value="Fechar" immediate="true" execute="@none"
+							onclick="PF('filtro').close()" />
+					</p:overlayPanel>
+					<p:commandButton value="Programar veículo" 
+						actionListener="#{programacaoMb.iniciarCriacao(painelEmbarquesMb.selecao[0].carregamento)}" 
+						update="visoes"/>
+					<p:commandButton value="Checar cadência" />
+				</h:panelGrid>
+			</p:outputPanel>
+			<p />
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{!programacaoMb.isCriacao()}"
+					style="display: inline-block;">
+
+					<p:dataTable id="ofertas" value="#{painelEmbarquesMb.lista}"
+						var="item" selection="#{painelEmbarquesMb.selecao}"
+						selectionMode="multiple" rowKey="#{item}"
+						style="display: inline-block">
+						<p:ajax event="rowSelect" update="@parent:areaMenu" />
+						<p:ajax event="rowUnselect" update="@parent:areaMenu" />
+						<p:column>
+							<f:facet name="header">Tomador</f:facet>
+							<h:outputText value="#{item.cotacao.dono.nome}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Id</f:facet>
+							<h:outputText value="#{item.carregamento.id}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Origem</f:facet>
+							<h:outputText value="#{item.carregamento.origem}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Destino</f:facet>
+							<h:outputText value="#{item.carregamento.destino}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Produto</f:facet>
+							<h:outputText value="#{item.carregamento.produto}" />
+						</p:column>
+						<p:column style="text-align: right">
+							<f:facet name="header">Qtde</f:facet>
+							<h:outputText value="#{item.carregamento.quantidade}">
+								<f:convertNumber pattern="###,##0.##" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<f:facet name="header">Unid.</f:facet>
+							<h:outputText value="#{item.carregamento.unidadeQuantidade}" />
+						</p:column>
+						<p:column style="text-align: right">
+							<f:facet name="header">Saldo estimado</f:facet>
+							<h:outputText value="#{item.carregamento.quantidade}">
+								<f:convertNumber pattern="###,##0.##" />
+							</h:outputText>
+						</p:column>
+						<p:column style="text-align: center">
+							<f:facet name="header">Veículos alocados</f:facet>
+							<h:outputText value="17">
+							</h:outputText>
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+
+				<p:outputPanel id="areaEdicao"
+					rendered="#{programacaoMb.podeExibirAreaEdicao()}">
+
+					<h:panelGrid columns="1">
+						<p:outputLabel value="Carregamento" />
+						<p:inputText value="#{programacaoMb.carga.carregamento.id}" />
+						<p:outputLabel value="Carregamento" />
+						<p:inputText value="#{painelEmbarquesMb.selecao[0].carregamento.id}" />
+						<p:outputLabel value="Veículo" />
+						<p:inputText value="#{programacaoMb.carga.veiculo.placa}" />
+						<p:outputLabel value="Data prevista" />
+						<p:inputText value="#{programacaoMb.carga.previsaoCarga}" />
+					</h:panelGrid>
+					<p />
+					<p:commandButton value="Salvar"
+						actionListener="#{programacaoMb.terminarCriacaoOuAlteracao}"
+						rendered="#{programacaoMb.isCriacao() || programacaoMb.isAlteracao()}"
+						update="mensagens, areaMenu, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{programacaoMb.terminarExclusao}"
+						rendered="#{programacaoMb.isExclusao()}" immediate="true"
+						update="mensagens, areaMenu, visoes" />
+					<p:commandButton value="Cancelar"
+						actionListener="#{programacaoMb.cancelar}" immediate="true"
+						update="mensagens, areaMenu, visoes" />
+				</p:outputPanel>
+			</p:outputPanel>
+			<p />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

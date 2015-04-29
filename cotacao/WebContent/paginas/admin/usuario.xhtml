@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Usuários</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:messages id="mensagens" closable="true" />
+			<p />
+			<p:outputPanel id="menuAcoes">
+				<h:panelGrid columns="10"  style="background-color: #f5f5f5">
+				<p:inputText value="#{usuarioMb.chavePesquisa}"
+					title="Pesquisar por nome ou e-mail"
+					disabled="#{!usuarioMb.actionListarHabilitada()}" />
+				<p:commandButton value="Pesquisar"
+					actionListener="#{usuarioMb.listar}"
+					disabled="#{!usuarioMb.actionListarHabilitada()}"
+ 					update="visoes, mensagens" />
+				<p:spacer width="8px" />
+				<p:commandButton value="Novo"
+					actionListener="#{usuarioMb.iniciarCriacao}"
+					disabled="#{!usuarioMb.actionNovoHabilitada()}"
+					immediate="true"
+					update="menuAcoes, visoes" />
+				<p:commandButton value="Editar"
+					actionListener="#{usuarioMb.iniciarAlteracao}"
+					disabled="#{!usuarioMb.actionEditarHabilitada()}"
+					immediate="true"
+					update="menuAcoes, visoes" />
+				</h:panelGrid>
+				<p />
+			</p:outputPanel>
+
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{usuarioMb.podeExibirAreaListagem()}">
+					<p:dataTable id="lista" value="#{usuarioMb.lista}" var="usuario"
+						emptyMessage="Nenhum registro encontrado" style="width:600px"
+						selection="#{usuarioMb.selecionados}" selectionMode="multiple"
+						rowKey="#{usuario}">
+
+						<p:ajax event="rowSelect" update="@parent:menuAcoes" />
+						<p:ajax event="rowUnselect" update="@parent:menuAcoes" />
+				
+						<p:column>
+							<f:facet name="header">Nome</f:facet>
+							<h:outputText value="#{usuario.nome}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">E-mail</f:facet>
+							<h:outputText value="#{usuario.email}" />
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton id="anterior" value="Anterior"
+						title="Página anterior"
+						disabled="#{!usuarioMb.temPaginaAnterior()}"
+						actionListener="#{usuarioMb.paginaAnterior}"
+						update="mensagens, areaListagem" />
+					<p:commandButton id="proxima" value="Próxima"
+						title="Próxima página" disabled="#{!usuarioMb.temProximaPagina()}"
+						actionListener="#{usuarioMb.proximaPagina}"
+						update="mensagens, areaListagem" />
+				</p:outputPanel>
+
+				<p:outputPanel id="areaEdicao"
+					rendered="#{usuarioMb.podeExibirAreaEdicao()}">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Nome" />
+						<p:inputText value="#{usuarioMb.usuario.nome}" />
+						<p:outputLabel value="E-mail" />
+						<p:inputText value="#{usuarioMb.usuario.email}" />
+						<p:outputLabel value="Senha" rendered="#{usuarioMb.isCriacao()}" />
+						<p:password value="#{usuarioMb.usuario.senha}" rendered="#{usuarioMb.isCriacao()}" />
+						<p:outputLabel value="Confirme a senha" rendered="#{usuarioMb.isCriacao()}" />
+						<p:password value="#{usuarioMb.confirmacaoSenha}" rendered="#{usuarioMb.isCriacao()}" />
+					</h:panelGrid>
+					<p />
+					<p:commandButton value="Salvar"
+						actionListener="#{usuarioMb.terminarCriacaoOuAlteracao}"
+						rendered="#{usuarioMb.isCriacao() || usuarioMb.isAlteracao()}"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{usuarioMb.terminarExclusao}"
+						rendered="#{usuarioMb.isExclusao()}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Cancelar"
+						actionListener="#{usuarioMb.cancelar}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+				</p:outputPanel>
+
+
+			</p:outputPanel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

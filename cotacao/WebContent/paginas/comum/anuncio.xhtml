@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Anúncio de cargas</ui:define>
+	<ui:define name="conteudo">
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" closable="true" />
+			<p />
+			<p:outputPanel id="menuAcoes">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:inputText value="#{anuncioMb.chavePesquisa}"
+						title="Pesquisar por origem, destino ou produto"
+						disabled="#{!anuncioMb.actionListarHabilitada()}" />
+					<p:commandButton value="Pesquisar"
+						actionListener="#{anuncioMb.listar}"
+						disabled="#{!anuncioMb.actionListarHabilitada()}"
+						update="visoes, mensagens" />
+					<p:spacer width="8px" />
+					<p:commandButton value="Novo"
+						actionListener="#{anuncioMb.iniciarCriacao}"
+						disabled="#{!anuncioMb.actionNovoHabilitada()}" immediate="true"
+						update="menuAcoes, visoes" />
+					<p:commandButton value="Editar"
+						actionListener="#{anuncioMb.iniciarAlteracao}"
+						disabled="#{!anuncioMb.actionEditarHabilitada()}" immediate="true"
+						update="menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{anuncioMb.iniciarExclusao}"
+						disabled="#{!anuncioMb.actionExcluirHabilitada()}"
+						immediate="true" update="menuAcoes, visoes" />
+				</h:panelGrid>
+				<p />
+			</p:outputPanel>
+
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{anuncioMb.podeExibirAreaListagem()}">
+					<p:dataTable id="lista" value="#{anuncioMb.lista}" var="anuncio"
+						emptyMessage="Nenhum registro encontrado"
+						style="display: inline-block; min-width:450px"
+						selection="#{anuncioMb.selecao}" selectionMode="multiple"
+						rowKey="#{anuncio}">
+
+						<p:ajax event="rowSelect" update="@parent:menuAcoes" />
+						<p:ajax event="rowUnselect" update="@parent:menuAcoes" />
+
+						<p:column>
+							<f:facet name="header">Id</f:facet>
+							<h:outputText value="#{anuncio.id}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Origem</f:facet>
+							<h:outputText value="#{anuncio.origem}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Destino</f:facet>
+							<h:outputText value="#{anuncio.destino}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Produto</f:facet>
+							<h:outputText value="#{anuncio.produto}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Preço</f:facet>
+							<h:outputText value="#{anuncio.preco}">
+								<f:convertNumber pattern="##,##0.00" />
+							</h:outputText>
+							
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton id="anterior" value="Anterior"
+						title="Página anterior"
+						disabled="#{!anuncioMb.temPaginaAnterior()}"
+						actionListener="#{anuncioMb.paginaAnterior}"
+						update="mensagens, areaListagem" />
+					<p:commandButton id="proxima" value="Próxima"
+						title="Próxima página" disabled="#{!anuncioMb.temProximaPagina()}"
+						actionListener="#{anuncioMb.proximaPagina}"
+						update="mensagens, areaListagem" />
+				</p:outputPanel>
+
+				<p:outputPanel id="areaEdicao"
+					rendered="#{anuncioMb.podeExibirAreaEdicao()}">
+
+					<h:panelGrid columns="2" >
+						<p:outputLabel value="Município origem" />
+						<p:inputText value="#{anuncioMb.anuncio.origem}" />
+						<p:outputLabel value="Município destino" />
+						<p:inputText value="#{anuncioMb.anuncio.destino}" />
+						<p:outputLabel value="Produto" />
+						<p:inputText value="#{anuncioMb.anuncio.produto}" />
+						<p:outputLabel value="Preço" />
+						<p:inputText value="#{anuncioMb.anuncio.preco}">
+							<f:convertNumber pattern="##,##0.00" />
+						</p:inputText>
+						<p:outputLabel value="Mais pedágio" for="maisPedagio"/>
+						<p:selectBooleanCheckbox id="maisPedagio" value="#{anuncioMb.anuncio.maisPedagio}">
+						</p:selectBooleanCheckbox>
+					</h:panelGrid>
+					<p />
+					<p:commandButton value="Salvar"
+						actionListener="#{anuncioMb.terminarCriacaoOuAlteracao}"
+						rendered="#{anuncioMb.isCriacao() || anuncioMb.isAlteracao()}"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{anuncioMb.terminarExclusao}"
+						rendered="#{anuncioMb.isExclusao()}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Cancelar"
+						actionListener="#{anuncioMb.cancelar}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+				</p:outputPanel>
+
+			</p:outputPanel>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

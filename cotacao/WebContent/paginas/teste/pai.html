@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+	var baseURI = "http://localhost:8080/cotacao/rest/pai/post"
+		
+
+  $("#botao2").click(function() {
+	  var obj = JSON.stringify({
+			"id":  "153947", 
+			"descricao": "Pai 101010",
+			"filhos" : [
+			  {"id": "153948", "descricao": "Filho 001"},
+			  /*{"id": "153949", "descricao": "Filho 002"},*/
+			  {"id": "153950", "descricao": "Filho 003"}
+			]
+		});
+
+		var x = $.ajax({
+			type: 'POST',
+			contentType: 'application/json',
+			url: baseURI,
+			dataType: "json",
+			data: obj,
+			success: function(data) {
+				console.log(data);
+		               $("#retorno").text(x.responseText);
+			},
+			error: function(data) {
+				console.log(data);
+	        	        $("#retorno").html(x.responseText);
+			}
+		});
+   });
+
+});
+
+
+</script>
+</head>
+<body>
+	<input type="button" id="botao2" value="Salvar" />
+
+
+	<p> Retorno: </p>
+	<p id="retorno" />
+
+</body>
+</html>

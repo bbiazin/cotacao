@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="headComplementar">
+		<script>
+
+		function responderCotacao(div) {
+			$(div).slideDown();
+		}
+		function cotacaoRespondida() {
+			$('[id*="resposta"]').slideUp();
+		}
+		function exibirFiltro() {
+			$('#filtro').slideDown();
+		}
+		function filtrou() {
+			$('#filtro').slideUp();
+		}
+			
+		</script>
+	</ui:define>
+	<ui:define name="titulo">Cotações a responder</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="form1">
+			<p:growl id="mensagens" />
+			<p />
+
+			<p:outputPanel id="areaDados" style="float: left; margin-left: 10px">
+				<p:dataTable id="ofertas" value="#{cotacoesAResponderMb.lista}"
+					var="oferta">
+					<p:column>
+						<f:facet name="header">Remetente</f:facet>
+						<p:outputLabel
+							value="#{oferta.itemCotacao.cotacao.dono.nome}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Cotação</f:facet>
+						<p:outputLabel value="#{oferta.itemCotacao.cotacao.id}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Fecha em</f:facet>
+						<p:outputLabel
+							value="#{oferta.itemCotacao.cotacao.dataFechamento}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>
+						<p:outputLabel value="#{oferta.itemCotacao.carregamento.origem}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>
+						<p:outputLabel value="#{oferta.itemCotacao.carregamento.destino}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Produto</f:facet>
+						<p:outputLabel value="#{oferta.itemCotacao.carregamento.produto}" />
+					</p:column>
+					<p:column style="text-align: right">
+						<f:facet name="header">Qtde</f:facet>
+						<p:outputLabel
+							value="#{oferta.itemCotacao.carregamento.quantidade}">
+							<f:convertNumber pattern="###,##0.##" />
+						</p:outputLabel>
+
+					</p:column>
+					<p:column>
+						<f:facet name="header">Unid</f:facet>
+						<p:outputLabel
+							value="#{oferta.itemCotacao.carregamento.unidadeQuantidade}" />
+					</p:column>
+					<p:column headerText="Preço por">
+						<p:outputLabel value="#{oferta.itemCotacao.unidadePreco}" />
+						<p:spacer width="5px" />
+						<p:commandButton id="verInfo" icon="ui-icon-zoomin" type="button"
+							rendered="#{oferta.itemCotacao.info != null and oferta.itemCotacao.info.length() > 0}" />
+						<p:overlayPanel for="verInfo">
+							<pre><p:outputLabel id="info" value="#{oferta.itemCotacao.info}" /></pre>
+						</p:overlayPanel>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Preço</f:facet>
+						<p:inputText value="#{oferta.valor}"
+							style="width: 40px; text-align: right">
+							<f:convertNumber pattern="###,##0.00" type="currency" />
+						</p:inputText>
+					</p:column>
+					<p:column>
+						<p:commandButton value="Enviar"
+							actionListener="#{cotacoesAResponderMb.enviarOferta(oferta)}"
+							update=":form1:mensagens, ofertas" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

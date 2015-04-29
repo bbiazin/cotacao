@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Consulta cotações recebidas</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" />
+			<p />
+
+			<p:outputPanel id="areaMenu">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:commandButton id="filtro" value="Filtro" icon="ui-icon-zoomin" type="button"/>
+					<p:overlayPanel id="areaFiltro" for="filtro" widgetVar="filtro">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Origem" />
+							<p:inputText value="#{cotacoesDestinatarioMb.filtro.origem}"/>
+							<p:outputLabel value="Destino" />
+							<p:inputText value="#{cotacoesDestinatarioMb.filtro.destino}"/>
+							<p:outputLabel value="Produto" />
+							<p:inputText value="#{cotacoesDestinatarioMb.filtro.produto}"/>
+							<p:outputLabel value="Período de publicação" />
+							<h:panelGroup>
+								<p:inputMask value="#{cotacoesDestinatarioMb.filtro.publicacaoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+								a
+								<p:inputMask value="#{cotacoesDestinatarioMb.filtro.publicacaoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							</h:panelGroup>
+							<p:outputLabel value="Período de fechamento" />
+							<h:panelGroup>
+								<p:inputMask value="#{cotacoesDestinatarioMb.filtro.fechamentoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+								a
+								<p:inputMask value="#{cotacoesDestinatarioMb.filtro.fechamentoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							</h:panelGroup>
+							<p:outputLabel value="Período de encerramento" />
+							<h:panelGroup>
+								<p:inputMask value="#{cotacoesDestinatarioMb.filtro.encerramentoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+								a
+								<p:inputMask value="#{cotacoesDestinatarioMb.filtro.encerramentoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							</h:panelGroup>
+						</h:panelGrid>
+						<p />
+						<p:commandButton value="Filtrar" actionListener="#{cotacoesDestinatarioMb.listar}"
+							onclick="this.form.target=''; PF('filtro').close()"
+							update="areaDados"/>
+						<p:commandButton value="Fechar" immediate="true" execute="@none"
+							onclick="this.form.target=''; PF('filtro').close()"/>
+					</p:overlayPanel>
+
+				</h:panelGrid>
+			</p:outputPanel>
+			<p />
+			<p:outputPanel id="areaDados" style="display: inline-block;"
+				rendered="#{cotacoesDestinatarioMb.cotacaoDetalhes == null}">
+				<p:dataTable id="ofertas" value="#{cotacoesDestinatarioMb.lista}"
+					var="item" selection="#{cotacoesDestinatarioMb.selecao}"
+					selectionMode="multiple" rowKey="#{item}" style="display: inline-block">
+					<p:ajax event="rowSelect" update="@parent:areaMenu" />
+					<p:ajax event="rowUnselect" update="@parent:areaMenu" />
+					<p:column>
+						<f:facet name="header">Remetente</f:facet>
+						<h:outputText value="#{item.cotacao.dono.nome}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Cotação</f:facet>
+						<h:outputText value="#{item.cotacao.id}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data publicação</f:facet>
+						<h:outputText value="#{item.cotacao.dataPublicacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data fechamento</f:facet>
+						<h:outputText value="#{item.cotacao.dataFechamento}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data encerramento</f:facet>
+						<h:outputText value="#{item.cotacao.dataEncerramento}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>
+						<h:outputText value="#{item.carregamento.origem}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>
+						<h:outputText value="#{item.carregamento.destino}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Produto</f:facet>
+						<h:outputText value="#{item.carregamento.produto}" />
+					</p:column>
+					<p:column style="text-align: right">
+						<f:facet name="header">Qtde</f:facet>
+						<h:outputText value="#{item.carregamento.quantidade}">
+							<f:convertNumber pattern="###,##0.##" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Unid. medida</f:facet>
+						<h:outputText value="#{item.carregamento.unidadeQuantidade}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Unid. preço</f:facet>
+						<h:outputText value="#{item.carregamento.unidadeQuantidade}" />
+					</p:column>
+					<p:column style="text-align: right">
+						<f:facet name="header">Oferta</f:facet>
+						<h:outputText value="#{item.getOferta(cotacoesDestinatarioMb.conta).valor}" 
+							rendered="#{item.getOferta(sessaoMb.conta) != null}">
+							<f:convertNumber pattern="###,##0.00" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Status</f:facet>
+						<h:outputText value="#{item.getStatusOferta(cotacoesDestinatarioMb.conta)}" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+
+			<p />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

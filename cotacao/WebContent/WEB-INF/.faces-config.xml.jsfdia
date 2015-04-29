@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="publicar::#cadastroCarregamento.xhtml"
+    NAME="output" PATH="/cadastroCarregamento.xhtml"
+    TARGET="rules:#cadastroCarregamento.xhtml" TITLE="publicar" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="edital::#edital.xhtml" NAME="output1"
+    PATH="/edital.xhtml" TARGET="rules:#edital.xhtml" TITLE="edital" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="atendimento::#atendimento.xhtml"
+    NAME="output2" PATH="/atendimento.xhtml"
+    TARGET="rules:#atendimento.xhtml" TITLE="atendimento" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#cadastroCarregamento.xhtml"
+  PATH="/cadastroCarregamento.xhtml" SHAPE="240,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#atendimento.xhtml" PATH="/atendimento.xhtml"
+  SHAPE="272,209,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#edital.xhtml" PATH="/edital.xhtml"
+  SHAPE="272,321,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

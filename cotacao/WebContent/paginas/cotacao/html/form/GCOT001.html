@@ -1,0 +1,66 @@
+<div class="box box-primary" id="FGCOT001">
+    <div class="box-header with-border">
+        <h3 class="box-title">Cotação</h3>
+    </div>
+
+    <div class="box-body">
+        <div class="row">
+            <div class="col-lg-12 form-group">
+                <label>Habilitados</label>
+                <tags-input ng-model="this.cotacao.habilitadoList" replace-spaces-with-dashes="false" key-property="email" display-property="nome" type="text" on-tag-added="this.validarEmail($tag);" placeholder="Informe o habilitado">
+                    <auto-complete select-first-match="false" source="this.buscarContato($query)"></auto-complete>
+                </tags-input>
+            </div>
+            
+            <div class="col-lg-12 form-group">
+                <label>Assunto</label>
+                <input class="form-control" placeholder="Informe o assunto" ng-model="this.cotacao.assunto">
+            </div>
+
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Lista de itens da cotação</h3>
+
+                        <div class="box-tools">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-sm btn-primary" ng-click="this.addItem()"><span class="fa fa-plus"></span> Adicionar</button>
+                                <button class="btn btn-sm btn-primary" ng-click="this.editarItem()"><span class="fa fa-edit"></span> Editar</button>
+                                <button class="btn btn-sm btn-primary" ng-click="this.removerItem()"><span class="fa fa-remove"></span> Remover</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-body no-padding">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 10px">#</th>
+                                    <th>Descrição do item</th>
+                                    <th class="text-right">Qtd.</th>
+                                </tr>
+
+                                <tr ng-repeat="item in this.cotacao.itemList" ng-class="{active : this.itemIndex == $index}" ng-click="this.selecionarItem(item)">
+                                    <td class="col-lg-1">{{ $index + 1 }}</td>
+                                    <td class="col-lg-10">{{ item.descricao }}</td>
+                                    <td class="col-lg-1 text-right">{{ item.quantidade | number : 2 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12 form-group">
+                <label>Observações</label>
+                <textarea class="form-control" ng-model="this.cotacao.observacoes"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="box-footer">
+        <div class="text-right">
+            <button class="btn btn-sm btn-primary" ng-click="this.enviarCotacao()"><span class="fa fa-send"></span> Enviar cotação</button>                            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+[{
+    "id" : 1,
+    "nome": "Bruno B. Biazin",
+    "email" : "bbiazin@coamo.com.br"
+},{   
+    "id" : 2,
+    "nome": "Rogério Dometerco",
+    "email" : "rdometerco@coamo.com.br" 
+},{   
+    "id" : 3,
+    "nome": "Marcos F. Alves",
+    "email" : "malves@coamo.com.br" 
+}]

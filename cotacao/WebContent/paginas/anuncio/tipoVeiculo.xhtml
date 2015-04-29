@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Tipos de veículo</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" closable="true" />
+			<p />
+			<p:outputPanel id="menuAcoes">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:inputText value="#{tipoVeiculoMb.chavePesquisa}"
+						title="Pesquisar por nome"
+						disabled="#{!tipoVeiculoMb.actionListarHabilitada()}" />
+					<p:commandButton value="Pesquisar"
+						actionListener="#{tipoVeiculoMb.listar}"
+						disabled="#{!tipoVeiculoMb.actionListarHabilitada()}"
+						update="visoes, mensagens" />
+					<p:spacer width="8px" />
+					<p:commandButton value="Novo"
+						actionListener="#{tipoVeiculoMb.iniciarCriacao}"
+						disabled="#{!tipoVeiculoMb.actionNovoHabilitada()}" immediate="true"
+						update="menuAcoes, visoes" />
+					<p:commandButton value="Editar"
+						actionListener="#{tipoVeiculoMb.iniciarAlteracao}"
+						disabled="#{!tipoVeiculoMb.actionEditarHabilitada()}" immediate="true"
+						update="menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{tipoVeiculoMb.iniciarExclusao}"
+						disabled="#{!tipoVeiculoMb.actionExcluirHabilitada()}"
+						immediate="true" update="menuAcoes, visoes" />
+				</h:panelGrid>
+				<p />
+			</p:outputPanel>
+
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{tipoVeiculoMb.podeExibirAreaListagem()}">
+					<p:dataTable id="lista" value="#{tipoVeiculoMb.lista}" var="tipoVeiculo"
+						emptyMessage="Nenhum registro encontrado"
+						style="display: inline-block; min-width:300px; max-width: 600px"
+						selection="#{tipoVeiculoMb.selecao}" selectionMode="multiple"
+						rowKey="#{tipoVeiculo}">
+
+						<p:ajax event="rowSelect" update="@parent:menuAcoes" />
+						<p:ajax event="rowUnselect" update="@parent:menuAcoes" />
+
+						<p:column>
+							<f:facet name="header">Tipo</f:facet>
+							<h:outputText value="#{tipoVeiculo.nome}" />
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton id="anterior" value="Anterior"
+						title="Página anterior"
+						disabled="#{!tipoVeiculoMb.temPaginaAnterior()}"
+						actionListener="#{tipoVeiculoMb.paginaAnterior}"
+						update="mensagens, areaListagem" />
+					<p:commandButton id="proxima" value="Próxima"
+						title="Próxima página" disabled="#{!tipoVeiculoMb.temProximaPagina()}"
+						actionListener="#{tipoVeiculoMb.proximaPagina}"
+						update="mensagens, areaListagem" />
+				</p:outputPanel>
+
+				<p:outputPanel id="areaEdicao"
+					rendered="#{tipoVeiculoMb.podeExibirAreaEdicao()}">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Tipo" />
+						<p:inputText value="#{tipoVeiculoMb.tipoVeiculo.nome}" />
+					</h:panelGrid>
+					<p />
+					<p:commandButton value="Salvar"
+						actionListener="#{tipoVeiculoMb.terminarCriacaoOuAlteracao}"
+						rendered="#{tipoVeiculoMb.isCriacao() || tipoVeiculoMb.isAlteracao()}"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{tipoVeiculoMb.terminarExclusao}"
+						rendered="#{tipoVeiculoMb.isExclusao()}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Cancelar"
+						actionListener="#{tipoVeiculoMb.cancelar}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+				</p:outputPanel>
+
+			</p:outputPanel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

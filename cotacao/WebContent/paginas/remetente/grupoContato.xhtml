@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="headComplementar">
+		<style>
+			.hide-column-names table thead tr {
+				display: none;
+			}
+		</style>
+	</ui:define>
+	
+	<ui:define name="titulo">Grupos de contato</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" closable="true" />
+			<p />
+			<p:outputPanel id="menuAcoes">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:inputText value="#{grupoContatoMb.chavePesquisa}"
+						title="Pesquisar por nome"
+						disabled="#{!grupoContatoMb.actionListarHabilitada()}" />
+					<p:commandButton value="Pesquisar"
+						actionListener="#{grupoContatoMb.listar}"
+						disabled="#{!grupoContatoMb.actionListarHabilitada()}"
+						update="visoes, mensagens" />
+					<p:spacer width="8px" />
+					<p:commandButton value="Novo"
+						actionListener="#{grupoContatoMb.iniciarCriacao}"
+						disabled="#{!grupoContatoMb.actionNovoHabilitada()}" immediate="true"
+						update="menuAcoes, visoes" />
+					<p:commandButton value="Editar"
+						actionListener="#{grupoContatoMb.iniciarAlteracao}"
+						disabled="#{!grupoContatoMb.actionEditarHabilitada()}" immediate="true"
+						update="menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{grupoContatoMb.iniciarExclusao}"
+						disabled="#{!grupoContatoMb.actionExcluirHabilitada()}"
+						immediate="true" update="menuAcoes, visoes" />
+				</h:panelGrid>
+				<p />
+			</p:outputPanel>
+
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{grupoContatoMb.podeExibirAreaListagem()}">
+					<p:dataTable id="lista" value="#{grupoContatoMb.lista}" var="grupo"
+						emptyMessage="Nenhum registro encontrado"
+						style="display: inline-block; min-width:300px"
+						selection="#{grupoContatoMb.selecao}" selectionMode="multiple"
+						rowKey="#{grupo}">
+
+						<p:ajax event="rowSelect" update="@parent:menuAcoes" />
+						<p:ajax event="rowUnselect" update="@parent:menuAcoes" />
+
+						<p:column style="min-width: 200px">
+							<f:facet name="header">Nome</f:facet>
+							<h:outputText value="#{grupo.nome}" />
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton id="anterior" value="Anterior"
+						title="Página anterior"
+						disabled="#{!grupoContatoMb.temPaginaAnterior()}"
+						actionListener="#{grupoContatoMb.paginaAnterior}"
+						update="mensagens, areaListagem" />
+					<p:commandButton id="proxima" value="Próxima"
+						title="Próxima página" disabled="#{!grupoContatoMb.temProximaPagina()}"
+						actionListener="#{grupoContatoMb.proximaPagina}"
+						update="mensagens, areaListagem" />
+				</p:outputPanel>
+
+				<p:outputPanel id="areaEdicao"
+					rendered="#{grupoContatoMb.podeExibirAreaEdicao()}">
+					<h:panelGrid columns="1">
+						<p:outputLabel value="Nome" />
+						<p:inputText value="#{grupoContatoMb.grupoContato.nome}" />
+					</h:panelGrid>
+					<p />
+					<p:commandButton icon="ui-icon-plus"
+						title="Adicionar contato"
+						actionListener="#{grupoContatoMb.novoContato()}" update="areaEdicao"
+						style="width: 20px; height: 20px; vertical-align: middle; border: none; border-radius: 0px" />
+					<p:outputLabel value="Contatos" />
+					<br />
+					<p:dataTable id="contatos" value="#{grupoContatoMb.grupoContato.contatos}"
+						var="contatoAgrupado"
+						style="display: inline-block; min-width: 150px"
+						styleClass="hide-column-names" emptyMessage="">
+						<p:column style="width: 20px">
+							<p:commandButton icon="ui-icon-minus"
+								title="Remover contato"
+								actionListener="#{grupoContatoMb.removerContatoAgrupado(contatoAgrupado)}"
+								update="@parent:contatos"
+								style="width: 20px; height: 20px; vertical-align: middle; border: none; border-radius: 0px" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{contatoAgrupado.contato.nome}"
+								rendered="#{contatoAgrupado.id != null}" />
+							<p:autoComplete value="#{contatoAgrupado.contato}"
+								rendered="#{contatoAgrupado.id == null}"
+								completeMethod="#{contatoMb.autoComplete}"
+								converter="#{contatoConverter}" var="contato"
+								itemLabel="#{contato.nome}" itemValue="#{contato}"
+								forceSelection="true" update="areaEdicao">
+							</p:autoComplete>
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton value="Salvar"
+						actionListener="#{grupoContatoMb.terminarCriacaoOuAlteracao}"
+						rendered="#{grupoContatoMb.isCriacao() || grupoContatoMb.isAlteracao()}"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Excluir"
+						actionListener="#{grupoContatoMb.terminarExclusao}"
+						rendered="#{grupoContatoMb.isExclusao()}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Cancelar"
+						actionListener="#{grupoContatoMb.cancelar}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+				</p:outputPanel>
+
+
+			</p:outputPanel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

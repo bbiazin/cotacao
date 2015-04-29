@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="headComplementar">
+		<style>
+			input[type="text"] {width: 200px}
+		</style>
+	</ui:define>
+	<ui:define name="titulo">Nova conta</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form>
+			<p:messages id="mensagens" closable="true"/>
+			<p />
+			<p:outputLabel value="Dados da conta" style="color: blue" />
+			<p/>
+			<h:panelGrid>
+				<p:outputLabel value="Nome" />
+				<p:inputText value="#{contaMb.conta.nome}"/>
+				<p:outputLabel value="E-mail" />
+				<p:inputText value="#{contaMb.conta.email}"/>
+			</h:panelGrid>
+			<p/>
+			<p:outputLabel value="Dados do usuário" style="color: blue" />
+			<p/>
+			<h:panelGrid>
+				<p:outputLabel value="Nome completo" />
+				<p:inputText value="#{contaMb.usuario.nome}"/>
+				<p:outputLabel value="E-mail" />
+				<p:inputText value="#{contaMb.usuario.email}"/>
+				<p:outputLabel value="Senha" />
+				<p:password value="#{contaMb.usuario.senha}"/>
+				<p:outputLabel value="Confirme a senha" />
+				<p:password value="#{contaMb.confirmaSenha}"/>
+			</h:panelGrid>
+			<p />
+			<p:commandButton value="Enviar" ajax="false" action="#{contaMb.terminarCriacaoOuAlteracao()}" />
+
+
+			<script>
+				$('#dynaButton').hide();
+			</script>
+		</h:form>
+	</ui:define>
+</ui:composition>

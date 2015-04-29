@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="titulo">Consulta cotações enviadas</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" />
+			<p />
+
+			<p:outputPanel id="areaMenu">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:commandButton id="filtro" value="Filtro" icon="ui-icon-zoomin" type="button"
+						disabled="#{cotacoesRemetenteMb.cotacaoDetalhes != null}"/>
+					<p:overlayPanel id="areaFiltro" for="filtro" widgetVar="filtro">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Origem" />
+							<p:inputText value="#{cotacoesRemetenteMb.filtro.origem}"/>
+							<p:outputLabel value="Destino" />
+							<p:inputText value="#{cotacoesRemetenteMb.filtro.destino}"/>
+							<p:outputLabel value="Produto" />
+							<p:inputText value="#{cotacoesRemetenteMb.filtro.produto}"/>
+							<p:outputLabel value="Período de publicação" />
+							<h:panelGroup>
+								<p:inputMask value="#{cotacoesRemetenteMb.filtro.publicacaoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+								a
+								<p:inputMask value="#{cotacoesRemetenteMb.filtro.publicacaoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							</h:panelGroup>
+							<p:outputLabel value="Período de fechamento" />
+							<h:panelGroup>
+								<p:inputMask value="#{cotacoesRemetenteMb.filtro.fechamentoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+								a
+								<p:inputMask value="#{cotacoesRemetenteMb.filtro.fechamentoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							</h:panelGroup>
+							<p:outputLabel value="Período de encerramento" />
+							<h:panelGroup>
+								<p:inputMask value="#{cotacoesRemetenteMb.filtro.encerramentoInicio}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+								a
+								<p:inputMask value="#{cotacoesRemetenteMb.filtro.encerramentoTermino}"
+									mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							</h:panelGroup>
+						</h:panelGrid>
+						<p />
+						<p:commandButton value="Filtrar" actionListener="#{cotacoesRemetenteMb.listar}"
+							onclick="this.form.target=''; PF('filtro').close()"
+							update="areaDados"/>
+						<p:commandButton value="Fechar" immediate="true" execute="@none"
+							onclick="this.form.target=''; PF('filtro').close()"/>
+					</p:overlayPanel>
+
+					<p:commandButton value="Abrir cotação"
+						actionListener="#{cotacoesRemetenteMb.exibirDetalhes}"
+						disabled="#{cotacoesRemetenteMb.selecao == null 
+							|| cotacoesRemetenteMb.selecao.size() != 1
+							|| cotacoesRemetenteMb.cotacaoDetalhes != null}"
+						update="@form">
+					</p:commandButton>
+					<p:commandButton value="Gerar PDF"
+						actionListener="#{cotacoesRemetenteMb.gerarRelatorio}"
+						disabled="#{cotacoesRemetenteMb.selecao == null 
+							|| cotacoesRemetenteMb.selecao.size() == 0}"
+						ajax="false" onclick="this.form.target='_blank'" oncomplete="this.form.target=''"/>
+					<p:commandButton value="Voltar para a lista"
+						disabled="#{cotacoesRemetenteMb.cotacaoDetalhes == null}"
+						actionListener="#{cotacoesRemetenteMb.fecharDetalhes()}"
+						update="@form" />
+
+				</h:panelGrid>
+			</p:outputPanel>
+			<p />
+			<p:outputPanel id="areaDados" style="display: inline-block;"
+				rendered="#{cotacoesRemetenteMb.cotacaoDetalhes == null}">
+				<p:dataTable id="ofertas" value="#{cotacoesRemetenteMb.lista}"
+					var="item" selection="#{cotacoesRemetenteMb.selecao}"
+					selectionMode="multiple" rowKey="#{item}">
+					<p:ajax event="rowSelect" update="@parent:areaMenu" />
+					<p:ajax event="rowUnselect" update="@parent:areaMenu" />
+					<p:column>
+						<f:facet name="header">Cotação</f:facet>
+						<h:outputText value="#{item.cotacao.id}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data publicação</f:facet>
+						<h:outputText value="#{item.cotacao.dataPublicacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data fechamento</f:facet>
+						<h:outputText value="#{item.cotacao.dataFechamento}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data encerramento</f:facet>
+						<h:outputText value="#{item.cotacao.dataEncerramento}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Item</f:facet>
+						<h:outputText value="#{item.descricao2}" />
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Habilitados</f:facet>
+						<h:outputText value="#{item.cotacao.habilitacoes.size()}" />
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Ofertas</f:facet>
+						<h:outputText value="#{item.ofertas.size()}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">Menores preços</f:facet>
+						<h:outputText value="#{item.getMenoresValoresDeOfertaToString(3)}" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+
+			<p />
+			<p:outputPanel id="detalhesCotacao"
+				rendered="#{cotacoesRemetenteMb.cotacaoDetalhes != null}"
+				style="dislay: inline-block">
+				<p:outputLabel value="Detalhes da cotação" />
+				<p />
+				<ui:include src="/resources/includes/detalhesCotacao.xhtml"></ui:include>
+				<p />
+			</p:outputPanel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

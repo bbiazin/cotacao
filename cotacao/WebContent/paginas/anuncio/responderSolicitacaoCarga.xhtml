@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="headComplementar">
+		<style>
+.hide-column-names table thead tr {
+	display: none;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="titulo">Solicitações de carga</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form id="form1" prependId="false">
+			<p:growl id="mensagens" closable="true" />
+			<p />
+			<p:outputPanel id="menuAcoes">
+				<h:panelGrid columns="10" style="background-color: #f5f5f5">
+					<p:inputText value="#{solicitacaoCargaMb.chavePesquisa}"
+						title="Pesquisar por origem, destino ou produto"
+						disabled="#{!solicitacaoCargaMb.actionListarHabilitada()}" />
+					<p:commandButton value="Pesquisar"
+						actionListener="#{solicitacaoCargaMb.listar}"
+						disabled="#{!solicitacaoCargaMb.actionListarHabilitada()}"
+						update="visoes, mensagens" />
+					<p:spacer width="8px" />
+					<p:commandButton value="Responder"
+						actionListener="#{solicitacaoCargaMb.iniciarAlteracao}"
+						disabled="#{!solicitacaoCargaMb.actionEditarHabilitada()}"
+						immediate="true" update="menuAcoes, visoes" />
+				</h:panelGrid>
+				<p />
+			</p:outputPanel>
+
+			<p:outputPanel id="visoes">
+
+				<p:outputPanel id="areaListagem"
+					rendered="#{solicitacaoCargaMb.podeExibirAreaListagem()}">
+					<p:dataTable id="lista" value="#{solicitacaoCargaMb.lista}"
+						var="solicitacaoCarga" emptyMessage="Nenhum registro encontrado"
+						style="display: inline-block; min-width:450px"
+						selection="#{solicitacaoCargaMb.selecao}" selectionMode="multiple"
+						rowKey="#{solicitacaoCarga}">
+
+						<p:ajax event="rowSelect" update="@parent:menuAcoes" />
+						<p:ajax event="rowUnselect" update="@parent:menuAcoes" />
+
+						<p:column>
+							<f:facet name="header">Id</f:facet>
+							<h:outputText value="#{solicitacaoCarga.id}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Data prevista</f:facet>
+							<h:outputText value="#{solicitacaoCarga.dataPrevista}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<f:facet name="header">Motorista</f:facet>
+							<h:outputText value="#{solicitacaoCarga.criador.nome}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Veículo</f:facet>
+							<h:outputText value="#{solicitacaoCarga.tipoVeiculo}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Origem</f:facet>
+							<h:outputText value="#{solicitacaoCarga.origem}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Destino</f:facet>
+							<h:outputText value="#{solicitacaoCarga.destino}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Produto</f:facet>
+							<h:outputText value="#{solicitacaoCarga.produto}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Preço</f:facet>
+							<h:outputText value="#{solicitacaoCarga.anuncio.preco}">
+								<f:convertNumber pattern="##,##0.00" />
+							</h:outputText>
+							<h:outputText
+								value="#{solicitacaoCarga.anuncio.maisPedagio ? ' mais pedágio' : ''}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">Observação</f:facet>
+							<h:outputText value="#{solicitacaoCarga.observacao}" />
+						</p:column>
+					</p:dataTable>
+					<p />
+					<p:commandButton id="anterior" value="Anterior"
+						title="Página anterior"
+						disabled="#{!solicitacaoCargaMb.temPaginaAnterior()}"
+						actionListener="#{solicitacaoCargaMb.paginaAnterior}"
+						update="mensagens, areaListagem" />
+					<p:commandButton id="proxima" value="Próxima"
+						title="Próxima página"
+						disabled="#{!solicitacaoCargaMb.temProximaPagina()}"
+						actionListener="#{solicitacaoCargaMb.proximaPagina}"
+						update="mensagens, areaListagem" />
+				</p:outputPanel>
+
+				<p:outputPanel id="areaEdicao"
+					rendered="#{solicitacaoCargaMb.podeExibirAreaEdicao()}">
+					<h:outputText value="Responder solicitação de carga"
+						style="font-size: 15px" />
+					<p />
+					<p:panelGrid columns="2">
+						<p:outputLabel value="Solicitação" />
+						<h:outputText value="#{solicitacaoCargaMb.solicitacaoCarga.id}" />
+						<p:outputLabel value="Data prevista" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.dataPrevista}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+						<p:outputLabel value="Motorista" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.criador.nome}" />
+						<p:outputLabel value="Veículo" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.tipoVeiculo}" />
+						<p:outputLabel value="Origem" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.origem}" />
+						<p:outputLabel value="Destino" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.destino}" />
+						<p:outputLabel value="Produto" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.produto}" />
+						<p:outputLabel value="Preço" />
+						<h:panelGroup>
+							<h:outputText
+								value="#{solicitacaoCargaMb.solicitacaoCarga.anuncio.preco}">
+								<f:convertNumber pattern="##,##0.00" />
+							</h:outputText>
+							<h:outputText
+								value="#{solicitacaoCargaMb.solicitacaoCarga.anuncio.maisPedagio ? ' mais pedágio' : ''}" />
+						</h:panelGroup>
+						<p:outputLabel value="Observação" />
+						<h:outputText
+							value="#{solicitacaoCargaMb.solicitacaoCarga.observacao}" />
+
+					</p:panelGrid>
+					<p />
+					<p:selectOneRadio columns="1">
+						<f:selectItem itemLabel="Autorizado" itemValue="autorizado" />
+						<f:selectItem itemLabel="Não autorizado" itemValue="nao_autorizado" />
+					</p:selectOneRadio>
+					<p />
+					<h:outputLabel value="Enviar um texto" /> <br/>
+					<p:inputTextarea cols="50" /> 
+					<p/>
+					<p:commandButton value="Enviar"
+						actionListener="#{solicitacaoCargaMb.terminarCriacaoOuAlteracao}"
+						rendered="#{solicitacaoCargaMb.isCriacao() || solicitacaoCargaMb.isAlteracao()}"
+						update="mensagens, menuAcoes, visoes" />
+					<p:commandButton value="Voltar"
+						actionListener="#{solicitacaoCargaMb.cancelar}" immediate="true"
+						update="mensagens, menuAcoes, visoes" />
+				</p:outputPanel>
+
+			</p:outputPanel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

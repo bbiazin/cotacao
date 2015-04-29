@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/geral.xhtml">
+
+	<ui:define name="headComplementar">
+	<style>
+		/*.ui-autocomplete-multiple-container { width: 210px;	}
+		#destinatarios * {width: 400px}*/
+		input[type="text"] {
+			width: 200px;
+		}
+
+	</style>
+	</ui:define>
+
+	<ui:define name="titulo">Nova cotação</ui:define>
+	<ui:define name="conteudo">
+
+
+		<h:form id="form1" prependId="false">
+
+			<p:messages id="mensagens" closable="true" />
+
+			<div style="float: left;">
+				
+				<p:outputPanel id="telas">
+					<p />
+					<p:outputPanel id="menuTeste">
+						<h:panelGrid columns="10" style="background-color: #f5f5f5;">
+							<p:commandButton value="Criar carregamento"
+								actionListener="#{novaCotacaoMb.novoCarregamento}" 
+								disabled="#{novaCotacaoMb.isCriacaoCarregamento()}"
+								update="menuTeste, telas" />
+							<p:commandButton id="btSelecionarArquivo"
+								value="Importar arquivo"
+								actionListener="#{novaCotacaoMb.selecionarArquivo}"
+								disabled="#{novaCotacaoMb.isSelecaoArquivo()}"
+								onclick="$('#selecaoArquivoDiv').show(); $('#fileUpload_input').click();"
+								update="menuTeste, itens" />
+							<p:commandButton value="Remover itens" id="removerItens"
+								title="Remover itens selecionados"
+								actionListener="#{novaCotacaoMb.removerItensSelecionados()}"
+								update="menuTeste, telas"
+								disabled="#{novaCotacaoMb.itensSelecionados == null || novaCotacaoMb.itensSelecionados.size() == 0}" />
+							<p:commandButton value="Publicar"
+								actionListener="#{novaCotacaoMb.abrirOpcaoPublicar()}"
+								update="menuTeste, telas"
+								disabled="#{novaCotacaoMb.cotacaoDto.itens.size() == 0 || (novaCotacaoMb.opcao != '' and !novaCotacaoMb.isPublicacao())}" />
+						</h:panelGrid>
+					</p:outputPanel>
+
+					<p />
+					<p:outputPanel id="publicacaoDiv"
+						rendered="#{novaCotacaoMb.isPublicacao()}">
+						<h:panelGrid columns="1">
+							<p:outputLabel value="Destinatários" />
+							<p:autoComplete id="destinatarios" value="#{novaCotacaoMb.destinatarios}"
+								var="destinatario"
+								completeMethod="#{destinatarioCotacaoMb.autoComplete}" multiple="true"
+								itemLabel="#{destinatario.nome}" itemValue="#{destinatario}"
+								converter="#{destinatarioConverter}"
+								styleClass="destinatario"/>
+
+							<p:outputLabel value="Data e hora de fechamento" />
+							<p:inputMask value="#{novaCotacaoMb.cotacaoDto.dataFechamento}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+						</h:panelGrid>
+						<p />
+						<p:commandButton value="Ok" action="#{novaCotacaoMb.publicar}"
+							process="@form" update="@form"
+							disabled="#{novaCotacaoMb.cotacaoDto.itens.size() == 0}" />
+						<p:commandButton value="Cancelar"
+							actionListener="#{novaCotacaoMb.cancelarPublicacao}"
+							update="menuTeste, telas" />
+						<p />
+					</p:outputPanel>
+
+					<p:outputPanel id="selecaoArquivoDiv" style="display: none">
+						<p:outputLabel value="Importar arquivo" />
+						<p />
+						<p:outputPanel id="selecaoArquivo">
+							<p:fileUpload id="fileUpload"
+								fileUploadListener="#{novaCotacaoMb.importarArquivo}"
+								label="Selecione"
+								invalidFileMessage="Formato de arquivo inválido. Os formatos permitidos são csv e txt"
+								invalidSizeMessage="Tamanho de arquivo superior ao permitido. O tamanho máximo permitido é 100 Kb"
+								mode="advanced" process="btSelecionarArquivo"
+								update="mensagens, telas, itens, menuTeste" auto="true"
+								sizeLimit="100000" allowTypes="/(\.|\/)(csv|txt)$/" />
+							<p/>
+							<p:outputLabel value="O arquivo não deve conter cabeçalho e estar no formato csv separado por ponto-e-vírgula. Colunas:" />
+							<p/>
+							<p:panelGrid columns="2" style="width: 600px">
+								<p:outputLabel value="1"/>
+								<p:outputLabel value="Origem" />
+								<p:outputLabel value="2" />
+								<p:outputLabel value="Município origem" />
+								<p:outputLabel value="3" />
+								<p:outputLabel value="Destino" />
+								<p:outputLabel value="4" />
+								<p:outputLabel value="Município destino" />
+								<p:outputLabel value="5" />
+								<p:outputLabel value="Produto" />
+								<p:outputLabel value="6" />
+								<p:outputLabel value="Quantidade" />
+								<p:outputLabel value="7" />
+								<p:outputLabel value="Unidade de medida da quantidade de produto. Ex.: TN, KG, UNID." />
+								<p:outputLabel value="8" />
+								<p:outputLabel value="Dados adicionais" />
+								<p:outputLabel value="9" />
+								<p:outputLabel value="Unidade de preço. Ex.: tonelada, lotação" />
+							</p:panelGrid>
+						</p:outputPanel>
+						<p />
+					</p:outputPanel>
+
+					<p:outputPanel id="novoCarregamento"
+						rendered="#{novaCotacaoMb.isCriacaoCarregamento()}">
+						<p:outputLabel value="Novo carregamento" />
+						<p />
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Origem " />
+							<p:inputText value="#{novaCotacaoMb.itemNovo.carregamento.origem}" />
+							<p:outputLabel value="Destino " />
+							<p:inputText value="#{novaCotacaoMb.itemNovo.carregamento.destino}" />
+							<p:outputLabel value="Produto " />
+							<p:inputText value="#{novaCotacaoMb.itemNovo.carregamento.produto}" />
+							<p:outputLabel value="Quantidade" />
+							<p:inputText value="#{novaCotacaoMb.itemNovo.carregamento.quantidade}" />
+							<p:outputLabel value="Unidade de medida" />
+							<p:inputText
+								value="#{novaCotacaoMb.itemNovo.carregamento.unidadeQuantidade}" />
+							<p:outputLabel value="Unidade de preço" />
+							<p:autoComplete value="#{novaCotacaoMb.itemNovo.unidadePreco}"
+								completeMethod="#{novaCotacaoMb.unidadePrecoAutoComplete}"/>
+							<p:outputLabel value="Dados adicionais" />
+							<p:inputTextarea value="#{novaCotacaoMb.itemNovo.carregamento.dadosAdicionais}"
+								cols="75"/>
+						</h:panelGrid>
+						<p />
+						<p:commandButton value="Adicionar à cotação"
+							actionListener="#{novaCotacaoMb.adicionarNovoCarregamento}"
+							process="novoCarregamento"
+							update="itens, novoCarregamento, menuTeste, telas" />
+						<p:commandButton value="Cancelar"
+							actionListener="#{novaCotacaoMb.cancelarNovoCarregamento}"
+							update="menuTeste, telas" />
+						<p />
+					</p:outputPanel>
+
+					<div id="itensDiv">
+						<p:outputPanel id="itens"
+							rendered="#{novaCotacaoMb.opcao == '' and novaCotacaoMb.cotacaoDto.itens.size() > 0}">
+							<p:dataTable value="#{novaCotacaoMb.cotacaoDto.itens}" var="item"
+								selection="#{novaCotacaoMb.itensSelecionados}"
+								selectionMode="multiple" rowKey="#{item}"
+								emptyMessage="Escolha uma das opções acima para criar os itens a serem cotados.">
+
+								<p:ajax event="rowSelect" update="@parent:removerItens" />
+								<p:ajax event="rowUnselect" update="@parent:removerItens" />
+								<p:column>
+									<f:facet name="header">Item</f:facet>
+									<h:outputText value="#{item.descricao2}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">Unid. preço</f:facet>
+									<h:outputText value="#{item.unidadePreco}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					</div>
+
+				</p:outputPanel>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
